@@ -4,14 +4,15 @@ But with great power comes great costs. Spatial locality requires that we have e
 
 2) So I ran my benchmark file  thats included in this folder and this is what was output...
 
-
-Create Array from base array        0.000000   0.000000   0.000000 (  0.000008)
-Create Array from each              0.000000   0.000000   0.000000 (  0.000529)
-Create Linked List                  0.000000   0.000000   0.000000 (  0.003540)
-access 5000th node                  0.000000   0.000000   0.000000 (  0.000001)
-access 500th node in linked_list    0.000000   0.000000   0.000000 (  0.000208)
-delete 5000th element in Array      0.000000   0.000000   0.000000 (  0.000002)
-delete 5000th node in linked_list   0.000000   0.000000   0.000000 (  0.000239)
+|test                               | user    |  system  | total   | really     |
+|-----------------------------------|---------|----------|---------|------------|
+|Create Array from base array       |0.000000 | 0.000000 | 0.000000|(  0.000008)|
+|Create Array from each             |0.000000 | 0.000000 | 0.000000|(  0.000529)|
+|Create Linked List                 |0.000000 | 0.000000 | 0.000000|(  0.003540)|
+|access 5000th node                 |0.000000 | 0.000000 | 0.000000|(  0.000001)|
+|access 500th node in linked_list   |0.000000 | 0.000000 | 0.000000|(  0.000208)|
+|delete 5000th element in Array     |0.000000 | 0.000000 | 0.000000|(  0.000002)|
+|delete 5000th node in linked_list  |0.000000 | 0.000000 | 0.000000|(  0.000239)|
 
 Holy smokes! Arrays are fast as all get out!
 
@@ -19,4 +20,8 @@ But this is exactly what we expected. Creating an array that is 10000 unites big
 
 By comparison, linked list is slow. _Suuuuuuper_ slow. But thats what you would expect. Linked Lists are awesome because they don't enforce spatial locality at the cost of lower performance. They are different structures that will be useful in different scenarios.
 
-accessing and deleting nodes and indices is also as you would expect. For arrays, it can go directly to the 5000th element, and then delete that element. It doesn't need to tranverse across it and see if it knows
+accessing and deleting nodes and indices is also as you would expect. For arrays, it can go directly to the 5000th element, and then delete that element. It doesn't need to tranverse across all the elements, which is the advantage of Spatial Locality. 
+
+Alternatively, the Linked List takes awhile. It has to go from the first all the way to the 5000th element, and that takes time. Deleting, it is similarly timed because getting rid of the node is actually fairly quick, the hard part is getting to the node itself in the first place (or maybe not the hard but at least the time consuming part)
+
+Ultimately the right choice is going to depend on what you are going to be using the data structure for, as with everything. An array isn't "better" than a linked list, they are just different structures with different strengths and weaknesses.
