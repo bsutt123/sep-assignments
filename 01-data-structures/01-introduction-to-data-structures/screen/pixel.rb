@@ -5,20 +5,29 @@
 # Pixels also require a coordinate location: x and y.
 
 class Pixel
-  attr_accessor :red
-  attr_accessor :green
-  attr_accessor :blue
-  attr_accessor :x
-  attr_accessor :y
+  attr_reader :red
+  attr_reader :green
+  attr_reader :blue
 
 
-  def initialize(red, green, blue, x, y)
-    self.red = validate_color(red)
-    self.blue =  validate_color(blue)
-    self.green = validate_color(green)
-    self.x = x
-    self.y = y
+  def initialize(red, green, blue)
+    @red = validate_color(red)
+    @blue =  validate_color(blue)
+    @green = validate_color(green)
   end
+
+  def set_red(color)
+    @red = validate_color(color)
+  end
+
+  def set_blue(color)
+    @blue = validate_color(color)
+  end
+
+  def set_green(color)
+    @green = validate_color(color)
+  end
+
 
   private
 

@@ -1,33 +1,33 @@
 require_relative 'pixel'
 
 class Screen
-  attr_accessor :width
-  attr_accessor :height
-  attr_accessor :matrix
+  attr_reader :width
+  attr_reader :height
+  attr_reader :matrix
 
   def initialize(width, height)
-    self.width = width
-    self.height = height
-    self.matrix = Array.new(height) { Array.new(width) }
+    @width = width
+    @height = height
+    @matrix = Array.new(height) { Array.new(width, Pixel.new(0,0,0)) }
   end
 
   # Insert a Pixel at x, y
   def insert(pixel, x, y)
-    if inbounds(x,y)
-      matrix[y][x] = pixel
+    if inbounds(x,y) && pixel.class.name == "Pixel"
+      @matrix[y][x] = pixel
     end
   end
 
   def at(x, y)
     if inbounds(x,y)
-      matrix[y][x]
+      @matrix[y][x]
     end
   end
 
   private
 
   def inbounds(x, y)
-    x >= 0 && y >= 0 && y <= height && x <= width
+    x >= 0 && y >= 0 && y <= @height && x <= @width
   end
 
 end
