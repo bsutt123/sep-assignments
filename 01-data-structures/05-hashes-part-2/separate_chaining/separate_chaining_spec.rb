@@ -32,9 +32,9 @@ RSpec.describe SeparateChaining, type: Class do
     it "does not resize the array when a collision occurs and the values match" do
       hash = SeparateChaining.new(4)
       hash["key"] = "value"
-      expect(hash.size).to eq 4
+      expect(hash.array_size).to eq 4
       hash["key"] = "second value"
-      expect(hash.size).to eq 4
+      expect(hash.array_size).to eq 4
     end
 
     it "sets the value of key to value" do
@@ -76,9 +76,9 @@ RSpec.describe SeparateChaining, type: Class do
   describe "#resize" do
     it "doubles the size of the array when invoked" do
       movies = SeparateChaining.new(6)
-      expect(movies.size).to eq 6
+      expect(movies.array_size).to eq 6
       movies.resize
-      expect(movies.size).to eq 12
+      expect(movies.array_size).to eq 12
     end
 
     it "copies existing values properly when the array is resized" do
@@ -87,7 +87,7 @@ RSpec.describe SeparateChaining, type: Class do
       movies["Empire Strikes Back"] = "Excellent"
       movies["Return of the Jedi"] = "The Best"
       movies.resize
-      expect(movies.size).to eq 12
+      expect(movies.array_size).to eq 12
       expect(movies["A New Hope"]).to eq "Average"
       expect(movies["Empire Strikes Back"]).to eq "Excellent"
       expect(movies["Return of the Jedi"]).to eq "The Best"
