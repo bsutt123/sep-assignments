@@ -59,17 +59,11 @@ RSpec.describe HashClass, type: Class do
 
     it "sets the value of key to value" do
       lotr_movies["The Lord of the Rings: The Fellowship of the Ring"] = "3 hours, 48 minutes"
-      p lotr_movies
       lotr_movies["The Lord of the Rings: The Two Towers"] = "3 hours, 55 minutes"
-      p lotr_movies
       lotr_movies["The Lord of the Rings: The Return of the King"] = "3 hours, 21 minutes"
-      p lotr_movies
       lotr_movies["The Hobbit: An Unexpected Journey"] = "3 hours, 2 minutes"
-      p lotr_movies
       lotr_movies["The Hobbit: The Desolation of Smaug"] = "3 hours, 7 minutes"
-      p lotr_movies
       lotr_movies["The Hobbit: The Battle of Five Armies"] = "2 hours, 44 minutes"
-      p lotr_movies
 
       expect(lotr_movies["The Lord of the Rings: The Fellowship of the Ring"]).to eq "3 hours, 48 minutes"
       expect(lotr_movies["The Lord of the Rings: The Two Towers"]).to eq "3 hours, 55 minutes"

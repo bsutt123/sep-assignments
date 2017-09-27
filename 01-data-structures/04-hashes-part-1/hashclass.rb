@@ -14,11 +14,13 @@ class HashClass
       @items[index(key,size)] = HashItem.new(key, value)
     else
       current_hash_item = @items[index(key, size)]
-      if (current_hash_item.key == key)
+      if current_hash_item.key == key
         @items[index(key,size)].value = value
       else
-        resize
-        @items[index(key,size)] =  HashItem.new(key,value)
+        while index(current_hash_item.key,size) == index(key, size)
+          resize
+        end
+        @items[index(key,size)] = HashItem.new(key, value)
       end
     end
   end
