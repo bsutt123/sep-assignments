@@ -155,7 +155,7 @@ RSpec.describe BinarySearchTree, type: Class do
        tree.insert(root, shawshank)
        tree.insert(root, district)
        tree.insert(root, mad_max_2)
-       expect { tree.printf }.to output(expected_output).to_stdout
+       expect { tree.print_tree }.to output(expected_output).to_stdout
      }
 
      specify {
@@ -170,7 +170,8 @@ RSpec.describe BinarySearchTree, type: Class do
        tree.insert(root, jedi)
        tree.insert(root, empire)
        tree.insert(root, hope)
-       expect { tree.printf }.to output(expected_output).to_stdout
+       expect { tree.print_tree }.to output(expected_output).to_stdout
      }
   end
 end
+
