@@ -49,6 +49,7 @@ class BinarySearchTree
     #if you have a rating that is the same. it will throw this out
     else
       p "That number has already been cataloged, please try again."
+      return
     end
   end
 
@@ -86,6 +87,26 @@ class BinarySearchTree
     #if you don't findit, return nil
     return 
   end
+
+  def find_by_rating(root, target_rating)
+    if target_rating == nil
+      return nil
+    elsif root == nil
+      return nil
+    elsif root.rating == target_rating
+      return root
+    else
+      if target_rating > root.rating
+        return find_by_rating(root.right, target_rating)
+      elsif target_rating < root.rating
+        return find_by_rating(root.left, target_rating)
+      else
+        p "wat"
+        binding.pry
+      end
+    end
+  end
+
 
   def delete(root, data)
     #if the data or the root is not given, then return nil
@@ -211,7 +232,8 @@ class BinarySearchTree
   def swap_node(parent_node, child_node)
     #So for this function we are essentially swapping a parents position with one of its child nodes
     #The function will not work if you swap a node that isn't one of the children of the parent
-
+    original_child_node = child_node.dup
+    original_parent_node = parent_node.dup
     #store the bottom children to latter assign after
     child_left = child_node.left
     child_right = child_node.right
@@ -293,11 +315,11 @@ class BinarySearchTree
     # if the parents parent original exisisted
     if parent_parent
       #determine if the parent was on the left or right of its original parent
-      if parent_parent.left.title == parent_node.title
+      if parent_parent.left && parent_parent.left.title == parent_node.title
         #set it up on the left if it originally connected there
         parent_parent.left = child_node
         child_node.parent = parent_parent
-      else
+      elsif parent_parent.right && parent_parent.right.title == parent_node.title
         #set it up on the right otherwise
         parent_parent.right = child_node
         child_node.parent = parent_parent

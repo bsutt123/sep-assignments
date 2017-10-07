@@ -2,6 +2,8 @@ require_relative 'node'
 require 'pry'
 
 class BinaryHeap
+	attr_reader :next_open_node
+	attr_reader :last_inserted_node
 	attr_accessor :root
 
 	def initialize(root)
@@ -11,7 +13,6 @@ class BinaryHeap
 	end
 
 	def insert(node)
-
 		#if there is no root, the newly inserted node is now the root
 		if @root == nil
 			@root = node
@@ -35,11 +36,14 @@ class BinaryHeap
 		#assign a starting position for the two nodes
 		current_node = node
 		current_parent = node.parent
+
+
 		if current_node.rating > current_parent.rating
 
 			swap_node(current_parent, current_node)
 
 			target_node = current_parent
+			@last_inserted_node = current_parent
 
 			current_parent = current_node.parent
 
@@ -54,10 +58,13 @@ class BinaryHeap
 			end
 		else
 			target_node = current_node
+			@last_inserted_node = current_node
 		end
-
-		@next_open_node = 
-
+		if is_full?(target_node.parent)
+			@next_open_node = find_next_open_node(target_node.parent)
+		else
+			@next_open_node = target_node.parent
+		end
 	end
 
 
@@ -125,17 +132,21 @@ class BinaryHeap
 		current_node = node
 
 		#find the last node in the tree. We will later break the connection for this node and insert it again
-		last_node = find_last_child
+		last_node = @last_inserted_node
+		last_nodes_parent = last_node.parent
+		if last_node.parent.left == last_node
+			
+			last_node.parent.left = nil
+
+		else
+			last_node.parent.right = nil
+		end
 
 		#if I want to delete the last node
 		if last_node == current_node
-
 			#if you happen to be deleting the last node that was inserted, then just breaks its connection
-			if last_node.parent.left == last_node
-				last_node.parent.left = nil
-			else
-				last_node.parent.right = nil
-			end
+			last_node = nil
+
 		else
 			#while the current node is not a leaf essentially
 			while current_node.left || current_node.right
@@ -166,6 +177,7 @@ class BinaryHeap
 			parent_node = current_node.parent
 
 
+
 			#break the connection
 			if parent_node.left == current_node
 				parent_node.left = nil
@@ -176,17 +188,17 @@ class BinaryHeap
 			#set the node to be nil to open up memeory space
 			current_node = nil
 
-			#break the connection between the last node and its parent
-			last_nodes_parent = last_node.parent
-			if last_nodes_parent.left == last_node
-				last_nodes_parent.left = nil
-			else
-				last_nodes_parent.right = nil
-			end
-			last_node.parent = nil
+			@next_open_node = parent_node
 
 			#reinsert the last node so that it will fill the slot left by the deleted node, thus rebalancing the tree
 			insert(last_node)
+		end
+
+		if last_nodes_parent
+			nearest_unbalanced_node = find_unbalanced_node(last_nodes_parent)
+			@last_inserted_node = find_last_insert(nearest_unbalanced_node)
+		else
+			@last_inserted_node = find_last_insert(@root)
 		end
 	end	
 
@@ -277,11 +289,11 @@ class BinaryHeap
     private
 
     def is_leaf?(node)
-    	node.right == nil && node.left == nil
+    	node.left == nil && node.right == nil
     end
 
     def is_full?(node)
-    	node.left != nil && node.right != nil
+    	node && node.left != nil && node.right != nil
     end
 
     def num_elements(root)
@@ -291,37 +303,26 @@ class BinaryHeap
     		return 1
     	else
     		num_left_elements = num_elements(root.left)
-    		num_right_element = num_element(root.right)
-    		return 1 + num_left_elements+number_right_elements
+    		num_right_elements = num_elements(root.right)
+    		return 1 + num_left_elements + num_right_elements
     	end
     end
 
     def find_next_open_node(target_node)
 
-    	while target_node.parent && num_elements(target_node.left) == num_elements(target_node.right)
+    	num_elements_comp = num_elements(target_node.left) ==  num_elements(target_node.right)
+
+    	while target_node.parent && num_elements_comp
 			target_node = target_node.parent
+			num_elements_comp = num_elements(target_node.left) ==  num_elements(target_node.right)
 		end
 
-		if target_node.parent == nil
+		if target_node.parent == nil && num_elements_comp
 			return far_left_node(@root)
 		else
-			return find_unbalanced_node(target_node.right)
+			return far_left_node(target_node.right)
 		end
 
-    end
-
-    def find_unbalanced_node(root)
-    	if !is_full?(root)
-    		return root
-    	else
-    		left_side = num_elements(root.left)
-    		right_side = num_element(root.right)
-    		if left_side == right_side
-    			return find_unbalanced_node(root.left)
-    		else
-    			return find_unbalanced_node(root.right)
-    		end
-    	end
     end
 
     def far_left_node(root)
@@ -332,110 +333,38 @@ class BinaryHeap
     	end
     end
 
+    def find_last_insert(root)
+    	left_num = num_elements(root.left)
+    	right_num = num_elements(root.right)
+    	if left_num == right_num
+    		return far_right_node(root)
+    	else
+    		if left_num > right_num
+    			return find_last_insert(root.left)
+    		else
+    			return find_last_insert(root.right)
+    		end
+    	end
+    end
 
-	def find_next_open_node(children = [])
-		#this function finds the node that has the next opening
-
-		# if it is the start of the function call with children as default
-		if children == []
-			#check to see if the root node is full, if it isn't return the root
-			if !@root.left || !@root.right
-				return @root
-			else
-				#otherwise, set the children to be the left and right children of the root
-			 	children = [@root.left, @root.right]
-
-			 	#recurse
-			 	find_next_open_node(children)
-			end
-		else
-			#make a variable to store the next children we will search
-			next_children = []
-
-			#For all of the we that is given, go through them until you find one that doesn't have 2 children
-			children.each do |child|
-
-				#if one of its 2 children isn't filled, then return that
-				if !child.left || !child.right
-					return child
-				else
-					#otherwise push both values onto the array of children we need to search through
-					next_children.push(child.left, child.right)
-				end
-			end
-
-			next_children = next_children.compact
-			
-			#guard clause for if we somehow don't find an opening but also don't find any children
-			if next_children == nil
-				return
-			
-			#recurse across the next layers of children
-			else
-				return find_next_open_node(next_children)
-			end
-		end
-	end
+    def far_right_node(root)
+    	if is_leaf?(root)
+    		return root
+    	else
+    		return far_right_node(root.right)
+    	end
+    end
 
 
-	def find_last_child(children = [])
-	#this function finds the node occupying the last position in the heap
-
-		#if it is starting off with the default
-		if children == []
-
-			#set up children as the right and left root
-			children = [@root.left, @root.right]
-
-			#push on the first value from the next level in the tree onto the end of the array
-			children.push(@root.left.left)
-
-			#set up an index search
-			(0...(children.length-1)).each do |index|
-				
-				#if the next node after current node is nil
-				if children[index+1] == nil
-
-					#return the current node
-					return children[index]
-				
-				end
-			end
-
-			#take off that node we put on the end
-			children.pop
-
-			#interate over the children
-			return find_last_child(children)
-		else
-
-			#set up an array that will hold the next children to search
-			next_children = []
-
-			#push the first value from the next level of the tree onto the end of the array
-			children.push(children[0].left)
-
-			#iterate over the indicdes from 0 to 1 before the end
-			(0...(children.length-1)).each do |index|
-
-				#if the next node is nil, then return the node we are on
-				if children[index+1] ==  nil
-					return children[index]
-				else 
-
-					#push the nodes 2 children onto the next array
-					next_children.push(children[index].left, children[index].right)
-				end
-			end
-
-			#compact the array so there are no nil values
-			next_children = next_children.compact
-
-			#iterate over the next set of child nodes
-			return find_last_child(next_children)
-		end
-	end
-
+    def find_unbalanced_node(node)
+    	left_side = num_elements(node.left)
+    	right_side = num_elements(node.right)
+    	if node.parent && left_side == right_side
+    		find_unbalanced_node(node.parent)
+    	else
+    		return node
+    	end
+    end
 
 	def swap_node(parent_node, child_node)
 		#So for this function we are essentially swapping a parents position with one of its child nodes
