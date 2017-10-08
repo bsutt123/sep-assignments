@@ -1,0 +1,111 @@
+So I don't do psuedo code like they recommend, I prefer full english sentences, because it helps me structure my code without the burder of coding concepts. It is just what I feel is more natural for me.
+
+I know that they think this is "bad" psuedo-code, but I think that their code is too close to _real_ code. If I want to do real code, then I would just type it out. I don't need to say SET total_cost to 0, I know the code that I need to implement to do that.
+
+Psuedo-code for me is about Boiling down highly complex concepts using english and full sentences until I get to a point where it is obvious how I would implement that sentence, not about making code that is one step removed from code.
+
+
+Calculating a tip.
+
+Read the bill and determine the base cost of the meal.
+
+Take the base cost of the meal, and move the decimal over one position to the left
+
+Store that value as your base tipping amount
+
+Decide if the waiter was excellent or average.
+
+If the waiter was excellent
+
+	Multiply the base tipping amount by 2, storing it as the tip amount
+
+	add the tip amount to the base cost of the meal and store in total meal cost
+
+Otherwise
+
+	Divide the base tipping amount by 2, storing in a half tipping amount
+
+	add the base tipping amount to the half tipping amount and store as total tip amounnt
+
+	add the total tip to the base cost of the meal, to get total meal cost
+
+Record the total tip onto the proper tip line.
+
+Record the total meal cost onto the correct line
+
+Sign the check
+
+
+Make Coffee in the Morning.
+
+Grab the electric kettle off the stand
+
+Go over to the sink with the electric kettle
+
+Open up the lid to the electric kettle
+
+Fill the kettle with water
+
+Close the lid
+
+Place the electric kettle of the stand
+
+Turn on the electric kettle to have the water begin heating up
+
+While the electric kettle heats the water
+	
+	Set the Bean grinder to 3 cups of beans
+
+	Set the Bean grinder grind size to "drip filter"
+
+	Press the start button to grind the beans
+
+	Get the Pour over coffee instruments from the drying rack
+
+	place the conical drip filter on the top of the glass container to hold the coffee
+
+	place a coffee filter in the conical drip aparatus
+
+	Pour the ground beans into the filter
+
+While there isn't enough coffee in the container
+
+	pour a slow steady stream of water over the ground beans
+
+	If the filter is too full
+
+		wait until all the water has drained out
+
+
+
+Making a Gin and Tonic
+
+
+Move the gin from the bar shelf to the top of the bar
+
+Move the tonic from below on the bar shelf to the top of the bar
+
+If lime is desired in the G&T
+	
+	get a lime from the fridge
+
+	cut it into quarters
+
+Get a glass from below the bar, preferably a highball but any glass will do
+
+Use the ice scoop to put a scoop of ice into the glass
+
+Pour 3 onces of Gin over the top of the ice into the glass
+
+Pour 4.5 onces of Tonic over the top of the ice into the glass
+
+If lime is desired in the G&T
+
+	while there isn't enough lime in the drink
+
+		squeeze a quarter of a lime into the drink
+
+stir the drink using the stirrer from the bar
+
+serve the drink to the happy person
+
