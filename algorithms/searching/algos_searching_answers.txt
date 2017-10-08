@@ -1,0 +1,32 @@
+1) So we have (I assume) the sorted alphabet from A to G. In order to find G on a linear search it would just go through each element and check to see if it is G. It would have to do this 7 times (also known as n the length of the list) on average
+
+For the binary search. First it will check if D is higher or lower than G. It is lower, so it will set low to be E and will check if F is higher or lower than G. Since it is lower, it will set low to be G, and because it is a single value we found G. That took 3 interations (or roughly log_2(n) )
+
+
+For Fib by hand it goes...
+
+0 - 1 - 1 - 2 - 3 - 5 - 8 - 13 - 21 - 34 - 55 - 89 - 144
+
+
+Comparing Fib from interative and recursive...
+
+
+Rehearsal --------------------------------------------------------
+fib iterative for 20   0.000000   0.000000   0.000000 (  0.000002)
+fib recrusive for 20   0.000000   0.000000   0.000000 (  0.000859)
+----------------------------------------------- total: 0.000000sec
+
+                           user     system      total        real
+fib iterative for 20   0.000000   0.000000   0.000000 (  0.000002)
+fib recrusive for 20   0.000000   0.000000   0.000000 (  0.000924)
+
+
+The Fib for the iterative solution smashed the recursive solution. This is because function calls are actually pretty slow in comparison to iteration if I am not mistaken
+
+Searching a List
+
+1) So if I had an unsorted list that I was searching through and I knew that I was going to serach it one time and pretty much one time only, I would use a linear search, because you can't use a Binary Search on an unsorted list. If I'm being honest though, I would probalby just sort this list once, using Quicksort of something that run in 0(n ln(n) ) time, eat the higher cost to find it with binary search the first time and then have a shorter search time for every other search I do on the list. I would user an iterative solution becuase it is fairly simple to use iterative on binary and linear searching and iterative is faster than recursive
+
+2) If the list is sorted, its a no brainer to use a binary search. It is just plain faster than a linear search. I would again use an iterative solution because it is not that hard to implement and it faster than recursive solutions.
+
+
