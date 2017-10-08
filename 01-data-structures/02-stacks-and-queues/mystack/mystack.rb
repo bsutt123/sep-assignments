@@ -18,11 +18,7 @@ class MyStack
   def pop
     if !empty?
       top_element = @stack[-1]
-      if @stack.length == 1
-        @stack = []
-      else
-        @stack = @stack[0...(@stack.length-1)]
-      end
+      @stack.delete_at(@stack.length-1)
       @top = @stack[-1]
       top_element
     end
