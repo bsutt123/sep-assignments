@@ -8,8 +8,7 @@ class BinaryHeap
 
 	def initialize(root)
 		@root = root
-		@next_open_node = root
-		@last_inserted_node = root
+		@current_number_nodes = 1
 	end
 
 	def insert(node)
@@ -17,54 +16,36 @@ class BinaryHeap
 		if @root == nil
 			@root = node
 		end
-		#finds the next parent that doesn't have all its children filled
-		parent_with_opening = @next_open_node
-		
-		#if the left child doesn't exist, then it thats the next opening
-		if !parent_with_opening.left
-			parent_with_opening.left = node
-		
-		#otherwise it must be the right child that is nil
-		else
-			parent_with_opening.right = node
-		end
+		@current_number_nodes += 1
 
-		#set up the inserted nodes parent as the next parent with its opening
-		node.parent = parent_with_opening
+		new_node_path = node_path(@current_number_nodes)
 
+		current_node = @root
 
-		#assign a starting position for the two nodes
-		current_node = node
-		current_parent = node.parent
-
-
-		if current_node.rating > current_parent.rating
-
-			swap_node(current_parent, current_node)
-
-			target_node = current_parent
-			@last_inserted_node = current_parent
-
-			current_parent = current_node.parent
-
-			#while the current parent exists and the current nodes rating is greater than its parent
-			while current_parent && current_node.rating > current_parent.rating
-				
-				#swap the current node with its parent
-				swap_node(current_parent, current_node)
-
-				#set the parent node as the current nodes new parent after the swap
-				current_parent = current_node.parent
+		new_node_path[0...-1].each do |num|
+			if num % 2 == 1
+				current_node = current_node.right
+			else
+				current_node = current_node.left
 			end
-		else
-			target_node = current_node
-			@last_inserted_node = current_node
 		end
-		if is_full?(target_node.parent)
-			@next_open_node = find_next_open_node(target_node.parent)
+
+		if @current_number_nodes % 2 == 1
+			current_node.right = node
+			node.parent = current_node
 		else
-			@next_open_node = target_node.parent
+			current_node.left = node
+			node.parent = current_node
 		end
+
+		current_parent = current_node.parent
+
+		while current_parent && current_node.rating > current_parent.rating
+			swap_node(current_parent, current_node)
+			current_parent = current_node.parent
+		end	
+
+
 	end
 
 
@@ -128,78 +109,47 @@ class BinaryHeap
 
 	def delete_node(node)
 
-		#set the current node to be the input node. 
-		current_node = node
 
-		#find the last node in the tree. We will later break the connection for this node and insert it again
-		last_node = @last_inserted_node
-		last_nodes_parent = last_node.parent
+		last_node_path = node_path(@current_number_nodes)
+		last_node = find_node_by_path(last_node_path)
+
 		if last_node.parent.left == last_node
-			
 			last_node.parent.left = nil
-
+			last_node.parent = nil
 		else
 			last_node.parent.right = nil
+			last_node.parent = nil
 		end
 
-		#if I want to delete the last node
-		if last_node == current_node
-			#if you happen to be deleting the last node that was inserted, then just breaks its connection
-			last_node = nil
+		@current_number_nodes -= 1
 
-		else
-			#while the current node is not a leaf essentially
-			while current_node.left || current_node.right
-				
-				#check to see if the current node has 2 children
-				if current_node.left != nil && current_node.right != nil
+		last_node.parent = node.parent
 
-					#swap the node with whichever child has a higher value to maintain heap property more easily
-					if current_node.left.rating > current_node.right.rating
-						swap_node(current_node, current_node.left)
-					else
-						swap_node(current_node, current_node.right)
-					end
+		last_node.left = node.left
 
-				#if there is only a left node, then swap the current node and the left node
-				elsif current_node.left
+		last_node.right = node.right
+
+		node = nil 
+
+		current_node = last_node
+		target_rating = last_node.rating
+
+		while (current_node.left && current_node.left.rating > target_rating ) || (current_node.right && current_node.right.rating > target_rating)
+			if current_node.left && current_node.right
+				if last_node.left > last_node.right
 					swap_node(current_node, current_node.left)
-
-				#in theory this should never occur, but if you happen to get a node that has a right but no left node, then swap it
-				elsif current_node.right
+				else
 					swap_node(current_node, current_node.right)
 				end
+			elsif current_node.left
+				swap_node(current_node, current_node.left)
+			elsif current_node.right
+				swap_node(current_node, current_node.left)
 			end
-
-			#once we are out of the loop, we know now that the node was want to delete is a leaf
-
-			#store the value of its parent
-			parent_node = current_node.parent
-
-
-
-			#break the connection
-			if parent_node.left == current_node
-				parent_node.left = nil
-			elsif parent_node.right == current_node
-				parent_node.right = nil
-			end
-
-			#set the node to be nil to open up memeory space
-			current_node = nil
-
-			@next_open_node = parent_node
-
-			#reinsert the last node so that it will fill the slot left by the deleted node, thus rebalancing the tree
-			insert(last_node)
 		end
 
-		if last_nodes_parent
-			nearest_unbalanced_node = find_unbalanced_node(last_nodes_parent)
-			@last_inserted_node = find_last_insert(nearest_unbalanced_node)
-		else
-			@last_inserted_node = find_last_insert(@root)
-		end
+
+		
 	end	
 
 	def print_heap(children = nil, all_nodes = [], times_looped = 0)
@@ -296,74 +246,27 @@ class BinaryHeap
     	node && node.left != nil && node.right != nil
     end
 
-    def num_elements(root)
-    	if !root
-    		return 0
-    	elsif is_leaf?(root)
-    		return 1
-    	else
-    		num_left_elements = num_elements(root.left)
-    		num_right_elements = num_elements(root.right)
-    		return 1 + num_left_elements + num_right_elements
+    def node_path(num)
+    	path_array = []
+
+    	while num > 1
+    		path_array.push(num)
+    		num = (num / 2).floor - num % 2
     	end
+
+    	path_array.reverse
     end
 
-    def find_next_open_node(target_node)
-
-    	num_elements_comp = num_elements(target_node.left) ==  num_elements(target_node.right)
-
-    	while target_node.parent && num_elements_comp
-			target_node = target_node.parent
-			num_elements_comp = num_elements(target_node.left) ==  num_elements(target_node.right)
-		end
-
-		if target_node.parent == nil && num_elements_comp
-			return far_left_node(@root)
-		else
-			return far_left_node(target_node.right)
-		end
-
-    end
-
-    def far_left_node(root)
-    	if is_leaf?(root)
-    		return root
-    	else
-    		return far_left_node(root.left)
-    	end
-    end
-
-    def find_last_insert(root)
-    	left_num = num_elements(root.left)
-    	right_num = num_elements(root.right)
-    	if left_num == right_num
-    		return far_right_node(root)
-    	else
-    		if left_num > right_num
-    			return find_last_insert(root.left)
+    def find_node_by_path(array)
+    	current_node = @root
+    	array.each do |num|
+    		if num % 2 == 1
+    			current_node = current_node.right
     		else
-    			return find_last_insert(root.right)
+    			current_node = current_node.left
     		end
     	end
-    end
-
-    def far_right_node(root)
-    	if is_leaf?(root)
-    		return root
-    	else
-    		return far_right_node(root.right)
-    	end
-    end
-
-
-    def find_unbalanced_node(node)
-    	left_side = num_elements(node.left)
-    	right_side = num_elements(node.right)
-    	if node.parent && left_side == right_side
-    		find_unbalanced_node(node.parent)
-    	else
-    		return node
-    	end
+    	return current_node
     end
 
 	def swap_node(parent_node, child_node)
