@@ -37,6 +37,9 @@ class GreedyGraph
 	def delete_node(node)
 		if @node_array.include?(node)
 			@node_array.delete(node)
+			if node == @root
+				@root = @node_array[0]
+			end
 			clear_graph
 		else
 			puts "That node isn't included"
